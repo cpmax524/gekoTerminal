@@ -304,38 +304,46 @@ def main():
     """
     Main function to run the Smart Money Tracker.
     """
-    print("Starting Smart Money Tracker...")
+    print("=============================================")
+    print("====== Starting Smart Money Tracker =========")
+    print("=============================================")
 
     # To test the final step without waiting for scans, you can use mock data:
     # safe_tokens_mock = [{"address": "0x123...", "price": 0.5}]
     # high_potential = confirm_conviction(safe_tokens_mock)
 
+    # Step 1: SCAN
     newly_found_tokens = scan_for_new_pools()
 
     if not newly_found_tokens:
-        print("\nNo new tokens meeting the criteria were found.")
+        print("\nExecution HALTED: No new tokens meeting the criteria were found.")
     else:
-        print(f"\nScan complete. Found {len(newly_found_tokens)} potential tokens.")
+        print(f"\n[Flow] SCAN Complete. Found {len(newly_found_tokens)} potential tokens. Proceeding to FILTER.")
 
+        # Step 2: FILTER
         safe_tokens = filter_tokens_by_security(newly_found_tokens)
 
         if not safe_tokens:
-            print("\nNo tokens passed the security filter.")
+            print("\nExecution HALTED: No tokens passed the security filter.")
         else:
-            print(f"\nFilter complete. Found {len(safe_tokens)} safe tokens.")
+            print(f"\n[Flow] FILTER Complete. Found {len(safe_tokens)} safe tokens. Proceeding to CONFIRM.")
 
+            # Step 3: CONFIRM
             high_potential_tokens = confirm_conviction(safe_tokens)
 
+            print("\n=============================================")
+            print("========= FINAL SUMMARY REPORT ==============")
+            print("=============================================")
             if high_potential_tokens:
-                print("\n--- FINAL REPORT: HIGH-POTENTIAL TOKENS ---")
+                print(f"Found {len(high_potential_tokens)} high-potential token(s):")
                 for token in high_potential_tokens:
-                    print(f"\nToken: https://bscscan.com/token/{token['address']}")
-                    print("  Smart Money Wallets:")
+                    print(f"\n  -> Token: https://bscscan.com/token/{token['address']}")
+                    print("     Smart Money Wallets:")
                     for wallet in token['smart_money_wallets']:
-                        print(f"    - https://bscscan.com/address/{wallet}")
-                print("\n-------------------------------------------")
+                        print(f"       - https://bscscan.com/address/{wallet}")
             else:
-                print("\nNo tokens were flagged as high-potential by smart money.")
+                print("No tokens were flagged as high-potential by smart money.")
+            print("=============================================")
 
     print("\nSmart Money Tracker finished.")
 
