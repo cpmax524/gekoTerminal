@@ -43,15 +43,15 @@ def scan_for_new_pools():
     print("Step 1: SCANNING for new and active token pools...")
     potential_tokens = []
 
-    # GeckoTerminal API returns pools sorted by latest creation time by default.
-    # We will paginate through the results.
+    # We will paginate through the results, sorting by creation time to get the newest pools first.
     page = 1
     # Limit to a reasonable number of pages to avoid infinite loops in edge cases.
     max_pages = 10
 
     while page <= max_pages:
         print(f"Scanning page {page}...")
-        url = f"{GECKOTERMINAL_API_URL}/networks/bsc/pools?page={page}"
+        # Add the 'sort=created_at_desc' parameter to fetch newest pools first.
+        url = f"{GECKOTERMINAL_API_URL}/networks/bsc/pools?page={page}&sort=created_at_desc"
 
         try:
             response = requests.get(url)
